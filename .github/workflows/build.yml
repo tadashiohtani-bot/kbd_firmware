@@ -16,11 +16,15 @@ jobs:
           fetch-depth: 0
 
       - name: Build Firmware
+        env:
+          kb: crkbd
+          kr: rev4_1/standard
+          km: vial
         run: |
           git config --global --add safe.directory '*'
           make git-submodule
-          make vial-qmk-init kb=crkbd kr=rev4_1/standard km=vial
-          make vial-qmk-compile
+          make vial-qmk-init kb=$kb kr=$kr km=$km
+          make vial-qmk-compile kb=$kb kr=$kr km=$km
 
       - name: Upload UF2 Artifact
         uses: actions/upload-artifact@v4
@@ -28,4 +32,5 @@ jobs:
           name: corne-v4_1-right-vial-firmware
           path: |
             keyboards/crkbd/vial-kb/vial-qmk/.build/*.uf2
+            src/vial-kb/vial-qmk/*.uf2
             *.uf2
