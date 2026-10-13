@@ -1,0 +1,31 @@
+name: Build Corne v4.1 Vial Firmware (Foostan)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/qmk/qmk_cli:latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Build Firmware
+        run: |
+          git config --global --add safe.directory '*'
+          make git-submodule
+          make vial-qmk-init kb=crkbd kr=rev4_1/standard km=vial
+          make vial-qmk-compile
+
+      - name: Upload UF2 Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: corne-v4_1-right-vial-firmware
+          path: |
+            keyboards/crkbd/vial-kb/vial-qmk/.build/*.uf2
+            *.uf2
